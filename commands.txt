@@ -4,9 +4,9 @@ CREATE TABLE ads (id bigint NOT NULL, company_id bigint NOT NULL, campaign_id bi
 ALTER TABLE companies ADD PRIMARY KEY (id);
 ALTER TABLE campaigns ADD PRIMARY KEY (id, company_id);
 ALTER TABLE ads ADD PRIMARY KEY (id, company_id);
-SELECT create_distributed_table('companies', 'id');
-SELECT create_distributed_table('campaigns', 'company_id');
-SELECT create_distributed_table('ads', 'company_id');
+SELECT create_distributed_table ('companies', 'id');
+SELECT create_distributed_table ('campaigns', 'company_id');
+SELECT create_distributed_table ('ads', 'company_id');
 \copy companies from 'companies.csv' with csv
 \copy campaigns from 'campaigns.csv' with csv
 \copy ads from 'ads.csv' with csv
