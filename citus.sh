@@ -7,4 +7,6 @@ curl https://examples.citusdata.com/tutorial/ads.csv > ads.csv
 docker cp companies.csv citus:.
 docker cp campaigns.csv citus:.
 docker cp ads.csv citus:.
-docker exec -i citus psql -U postgres < commands.txt
+docker exec -i citus psql -U postgres < commands1.txt
+docker exec -i citus psql -U postgres < commands2.txt
+docker exec -i citus psql -U postgres < commands3.txt
