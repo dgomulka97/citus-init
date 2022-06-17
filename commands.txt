@@ -16,3 +16,37 @@ BEGIN;
 DELETE FROM campaigns WHERE id = 46 AND company_id = 5;
 DELETE FROM ads WHERE campaign_id = 46 AND company_id = 5;
 COMMIT;
+
+CREATE OR REPLACE FUNCTION
+  delete_campaign(company_id int, campaign_id int)
+RETURNS void LANGUAGE plpgsql AS $fn$
+BEGIN
+  DELETE FROM campaigns
+   WHERE id = $2 AND campaigns.company_id = $1;
+  DELETE FROM ads
+   WHERE ads.campaign_id = $2 AND ads.company_id = $1;
+END;
+$fn$;
+
+SELECT create_distributed_function(
+  'delete_campaign(int, int)', 'company_id',
+  colocate_with := 'campaigns'
+);
+
+-- you can run the function as usual
+SELECT delete_campaign(5, 46);
+
+SELECT name, cost_model, state, monthly_budget
+FROM campaigns
+WHERE company_id = 5
+ORDER BY monthly_budget DESC
+LIMIT 10;
+
+SELECT campaigns.id, campaigns.name, campaigns.monthly_budget,
+       sum(impressions_count) as total_impressions, sum(clicks_count) as total_clicks
+FROM ads, campaigns
+WHERE ads.company_id = campaigns.company_id
+AND campaigns.company_id = 5
+AND campaigns.state = 'running'
+GROUP BY campaigns.id, campaigns.name, campaigns.monthly_budget
+ORDER BY total_impressions, total_clicks;
